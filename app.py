@@ -4,9 +4,8 @@ import numpy as np
 import joblib
 from sklearn.base import BaseEstimator, TransformerMixin
 
-# ==============================================================================
 # STRUCTURES REQUISES POUR LE FICHIER .PKL
-# ==============================================================================
+
 class CustomDataImputer(BaseEstimator, TransformerMixin): 
     def __init__(self):
         self.mode_global_purpose = None
@@ -77,20 +76,20 @@ class CategoricalToStringConverter(BaseEstimator, TransformerMixin):
         X_copy[self.variables] = X_copy[self.variables].astype(str)
         return X_copy
 
-# ==============================================================================
+
 # CHARGEMENT DES FICHIERS MODELES .PKL
-# ==============================================================================
+
 @st.cache_resource
 def charger_modeles():
-    pipeline_prepro = joblib.load(r'C:\Users\HP\Documents\Projet_Machine_Learning\pipeline_preprocessing_final.pkl')
-    pack_mlp = joblib.load(r'C:\Users\HP\Documents\Projet_Machine_Learning\modele_mlp_final.pkl')
+    pipeline_prepro = joblib.load('pipeline_preprocessing_final.pkl')
+    pack_mlp = joblib.load('modele_mlp_final.pkl')
     return pipeline_prepro, pack_mlp['scaler'], pack_mlp['model']
 
 pipeline_preprocessing, scaler_modele, modele_mlp = charger_modeles()
 
-# ==============================================================================
+
 # FONCTION COMMUNE DE PRÉDICTION
-# ==============================================================================
+
 def executer_prediction(df_entree):
     variables_attendues_modele = [
         'loan_limit', 'Gender', 'approv_in_adv', 'loan_type', 'loan_purpose', 
@@ -141,10 +140,9 @@ def executer_prediction(df_entree):
     return modele_mlp.predict(X_scaled), modele_mlp.predict_proba(X_scaled)[:, 1]
 
 
-# ==============================================================================
+
 # STRUCTURE VISUELLE (IMAGE EN HAUT À GAUCHE)
-# ==============================================================================
-# Modifié : L'image est maintenant envoyée dans st.sidebar pour s'afficher en haut à gauche
+
 try:
     st.sidebar.image(r"C:\Users\HP\Documents\Projet_Machine_Learning\image_app_predict.png", use_container_width=True)
 except:
@@ -160,9 +158,9 @@ option = st.selectbox(
 
 st.write("---")
 
-# ==============================================================================
+
 # GESTION DU MODE 1 : SAISIE MANUELLE AU CENTRE (FORMULAIRE)
-# ==============================================================================
+
 if option == 'Saisir les paramètres manuellement':
     st.subheader("📝 Formulaire de saisie des paramètres")
     
@@ -240,9 +238,9 @@ if option == 'Saisir les paramètres manuellement':
         except Exception as e:
             st.error(f"Erreur lors du calcul : {e}")
 
-# ==============================================================================
+
 # GESTION DU MODE 2 : CHARGEMENT DE FICHIER CSV (CENTRE)
-# ==============================================================================
+
 elif option == 'Charger un fichier de données CSV':
     st.subheader("📂 Analyse de fichiers groupés (Batch)")
     
